@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (state is GettingWeatherData) {
             return LoadingWeather();
           } else if (state is GettingWeatherFailed) {
-            return Text('Failed to get weather data.');
+            return WeatherFailed();
           } else if (state is WeatherDataSuccess) {
             return showWeather(state.selectedIndex, state.weathers);
           }
