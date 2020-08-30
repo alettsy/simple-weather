@@ -1,8 +1,8 @@
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
-import '../constants.dart';
-import 'dart:convert';
 import 'package:geocoder/geocoder.dart';
+import '../constants.dart';
 
 class WeatherRepo {
   Future<bool> checkLocationPermissions() async {
