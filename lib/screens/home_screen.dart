@@ -42,12 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 60),
-            Column(
-              children: [
-                Image.asset(weatherStyle[0] as String, scale: 3),
-                const SizedBox(height: 30),
-                Temperature(weather: weathers[selected]),
-              ],
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Column(
+                children: [
+                  Image.asset(weatherStyle[0] as String, scale: 3),
+                  const SizedBox(height: 30),
+                  Temperature(weather: weathers[selected]),
+                ],
+              ),
             ),
             const Expanded(child: SizedBox()),
             WeatherDayList(
@@ -63,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    context.bloc<WeatherBloc>().add(GetWeatherDataEvent());
+    context.bloc<WeatherBloc>().add(GetWeatherData());
 
     return Scaffold(
       body: BlocBuilder<WeatherBloc, WeatherState>(
