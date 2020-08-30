@@ -77,7 +77,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   }
 
   void startTimer() async {
-    timer = Timer(Duration(minutes: 1), () {
+    timer = Timer(Duration(minutes: 2), () {
       add(
         UpdateWeather(
           (state as WeatherDataSuccess).selectedIndex,
