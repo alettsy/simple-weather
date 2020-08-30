@@ -50,6 +50,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         final data = await getWeather();
         yield WeatherDataSuccess(
             data, (state as WeatherDataSuccess).selectedIndex);
+        startTimer();
       } on Exception {
         yield GettingWeatherFailed();
       }
