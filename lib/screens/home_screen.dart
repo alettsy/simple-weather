@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:simple_weather/blocs/weather/weather_bloc.dart';
-import 'package:simple_weather/models/weather_model.dart';
+import '../blocs/weather/weather_bloc.dart';
+import '../components/components.dart';
+import '../models/weather_model.dart';
+import '../resources/weather_style.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,13 +11,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Widget showWeather(String location, List<Weather> weathers) {
-    final weatherStyle = getWeatherStyle(weathers[0].weatherStateAbbr);
+  Widget showWeather(int selected, String location, List<Weather> weathers) {
+    final weatherStyle = getWeatherStyle(weathers[selected].weatherStateAbbr);
 
     return Container(
       width: MediaQuery.of(context).size.width,
       height: double.infinity,
-      color: weatherStyle[1] as Color,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [weatherStyle[1] as Color, (weatherStyle[2] as Color)],
+          begin: FractionalOffset.topCenter,
+          end: FractionalOffset.bottomCenter,
+        ),
+      ),
       padding: EdgeInsets.all(20),
       child: SafeArea(
         child: Column(
@@ -30,106 +38,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Text(
-              'Updated 16:38',
+              'Updated ${weathers[selected].updated}',
               style: TextStyle(color: Colors.grey),
             ),
-            const SizedBox(height: 80),
+            const SizedBox(height: 60),
             Column(
               children: [
-                weatherStyle[0],
+                Image.asset(weatherStyle[0] as String, scale: 3),
                 const SizedBox(height: 30),
-                tempAndHumidity(weathers[0]),
+                Temperature(weather: weathers[selected]),
               ],
             ),
+            const Expanded(child: SizedBox()),
+            WeatherDayList(
+              weathers: weathers,
+              selectedIndex: selected,
+            ),
+            const SizedBox(height: 50),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget weatherType(String weatherState, List<dynamic> weatherStyle) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          weatherState,
-          style: TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 10),
-        Image(image: weatherStyle[0] as AssetImage),
-      ],
-    );
-  }
-
-  List<dynamic> getWeatherStyle(String weatherAbbr) {
-    Image image;
-    Color color;
-
-    switch (weatherAbbr) {
-      case 'sn':
-      case 'sl':
-      case 'hl':
-        image = Image.asset('assets/icons/snowing.png', scale: 0.8);
-        color = Colors.white;
-        break;
-      case 't':
-        image = Image.asset('assets/icons/storm.png', scale: 0.8);
-        color = Colors.grey[800];
-        break;
-      case 'hr':
-        image = Image.asset('assets/icons/raining.png', scale: 0.8);
-        color = Colors.blueGrey[600];
-        break;
-      case 'lr':
-        image = Image.asset('assets/icons/raining.png', scale: 0.8);
-        color = Colors.blue[800];
-        break;
-      case 'hc':
-        image = Image.asset('assets/icons/cloudy.png', scale: 0.8);
-        color = Colors.grey;
-        break;
-      case 'lc':
-        image = Image.asset('assets/icons/partly-cloudy.png', scale: 0.8);
-        color = Colors.grey[300];
-        break;
-      default:
-        image = Image.asset('assets/icons/sunny.png', scale: 5);
-        color = Colors.white;
-    }
-
-    return [image, color];
-  }
-
-  Widget tempAndHumidity(Weather weather) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '${weather.currentTemp.toStringAsFixed(0)}°C',
-          style: TextStyle(fontSize: 64),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          '${weather.maxTemp.toStringAsFixed(0)}°C / ${weather.minTemp.toStringAsFixed(0)}°C',
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
-    );
-  }
-
-  Widget loadingWeather() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-          const SizedBox(height: 20),
-          Text('Loading Weather'),
-        ],
       ),
     );
   }
@@ -142,11 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           if (state is GettingWeatherData) {
-            return loadingWeather();
+            return LoadingWeather();
           } else if (state is GettingWeatherFailed) {
-            return Text('failed to get weather');
+            return Text('Failed to get weather data.');
           } else if (state is WeatherDataSuccess) {
-            return showWeather(state.locationName, state.weathers);
+            return showWeather(
+                state.selectedIndex, state.locationName, state.weathers);
           }
 
           return Container();

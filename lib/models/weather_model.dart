@@ -1,4 +1,8 @@
+import 'package:intl/intl.dart';
+
 class Weather {
+  final String updated;
+  final String date;
   final String weatherState;
   final String weatherStateAbbr;
   final String windDirection;
@@ -9,6 +13,8 @@ class Weather {
   final int humidity;
 
   Weather({
+    this.updated,
+    this.date,
     this.weatherState,
     this.weatherStateAbbr,
     this.windDirection,
@@ -21,6 +27,9 @@ class Weather {
 
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
+      updated: DateFormat('kk:mm').format(DateTime.now()),
+      date: DateFormat('EEEE', 'en_US')
+          .format(DateTime.parse(json['applicable_date'])),
       weatherState: json['weather_state_name'],
       weatherStateAbbr: json['weather_state_abbr'],
       windDirection: json['wind_direction_compass'],

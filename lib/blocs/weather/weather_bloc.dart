@@ -9,7 +9,7 @@ part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  WeatherBloc() : super(WeatherInitial());
+  WeatherBloc() : super(WeatherInitial(0));
 
   @override
   Stream<WeatherState> mapEventToState(
@@ -17,19 +17,27 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   ) async* {
     if (event is GetWeatherDataEvent) {
       yield* _mapGetWeatherToState();
+    } else if (event is SelectDay) {
+      yield* _mapSelectDayToState(event);
     }
   }
 
   Stream<WeatherState> _mapGetWeatherToState() async* {
-    final weathers = <Weather>[];
-
     try {
       yield GettingWeatherData();
       final city = await WeatherRepo().getCity();
       final data = await getWeather();
-      yield WeatherDataSuccess(city, data);
+      yield WeatherDataSuccess(city, data, 0);
     } on Exception {
       yield GettingWeatherFailed();
+    }
+  }
+
+  Stream<WeatherState> _mapSelectDayToState(SelectDay event) async* {
+    if (state is WeatherDataSuccess) {
+      final location = (state as WeatherDataSuccess).locationName;
+      final weathers = (state as WeatherDataSuccess).weathers;
+      yield WeatherDataSuccess(location, weathers, event.selected);
     }
   }
 
@@ -38,8 +46,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
     final weatherData = await WeatherRepo().getWeatherJson();
 
-    final oneOnly = Weather.fromJson(weatherData['consolidated_weather'][0]);
-    weathers.add(oneOnly);
+    final consolidated = weatherData['consolidated_weather'] as List<dynamic>;
+    for (var i = 0; i < consolidated.length; i++) {
+      final weather = Weather.fromJson(consolidated[i]);
+      weathers.add(weather);
+    }
 
     return weathers;
   }
