@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import '../constants.dart';
 import 'dart:convert';
+import 'package:geocoder/geocoder.dart';
 
 class WeatherRepo {
   // get location
@@ -12,50 +13,53 @@ class WeatherRepo {
     return true;
   }
 
-  Future<String> getCity() async {
+  Future<Position> getCoords() async {
     if (await checkLocationPermissions()) {
       final position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-      final placemark = await Geolocator()
-          .placemarkFromCoordinates(position.latitude, position.longitude);
-
-      final place = placemark[0];
-      print(place.locality);
-      return place.locality;
+      return position;
     }
 
-    return 'none';
-  }
-
-  // get woeied
-  Future<String> getWoeid() async {
-    final city = await getCity();
-    final response = await http.get('$woiedUrl$city');
-
-    if (response.body.length > 3 && response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print(data[0]['woeid']);
-      return data[0]['woeid'].toString();
-    } else {
-      print('failed in woeid');
-      return '00000';
-    }
+    return Position();
   }
 
   // get weather data
   Future<Map<String, dynamic>> getWeatherJson() async {
-    final woeid = await getWoeid();
+    final position = await getCoords();
+    final url =
+        '${weatherUrl}lat=${position.latitude}&lon=${position.longitude}$weatherKey';
 
-    final response = await http.get('$weatherUrl$woeid');
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('got the json from server');
-      return data;
-    } else {
-      print('failed to get json from server');
-      return <String, dynamic>{};
+      print('url: $url');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('Received Weather JSON');
+        return data;
+      } else {
+        print('Error getting Weather JSON');
+        return <String, dynamic>{};
+      }
+    } on Exception {
+      print('Failed to get Weather JSON');
+      rethrow;
     }
+  }
+
+  Future<String> getCity() async {
+    final position = await getCoords();
+    var coords = Coordinates(position.latitude, position.longitude);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coords);
+    for (var i = 0; i < addresses.length; i++) {
+      final locality = addresses[i].locality;
+      if (locality != null) {
+        return locality;
+      }
+    }
+
+    return 'Unkown Location';
   }
 }

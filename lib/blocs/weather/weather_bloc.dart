@@ -29,9 +29,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   Stream<WeatherState> _mapGetWeatherToState() async* {
     try {
       yield GettingWeatherData();
-      final city = await WeatherRepo().getCity();
       final data = await getWeather();
-      yield WeatherDataSuccess(city, data, 0);
+      yield WeatherDataSuccess(data, 0);
       startTimer();
     } on Exception {
       yield GettingWeatherFailed();
@@ -40,19 +39,17 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Stream<WeatherState> _mapSelectDayToState(SelectDay event) async* {
     if (state is WeatherDataSuccess) {
-      final location = (state as WeatherDataSuccess).locationName;
       final weathers = (state as WeatherDataSuccess).weathers;
-      yield WeatherDataSuccess(location, weathers, event.selected);
+      yield WeatherDataSuccess(weathers, event.selected);
     }
   }
 
   Stream<WeatherState> _mapUpdateWeatherToState(UpdateWeather event) async* {
     if (state is WeatherDataSuccess) {
       try {
-        final city = await WeatherRepo().getCity();
         final data = await getWeather();
         yield WeatherDataSuccess(
-            city, data, (state as WeatherDataSuccess).selectedIndex);
+            data, (state as WeatherDataSuccess).selectedIndex);
       } on Exception {
         yield GettingWeatherFailed();
       }
@@ -63,10 +60,16 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     final weathers = <Weather>[];
 
     final weatherData = await WeatherRepo().getWeatherJson();
+    final city = await WeatherRepo().getCity();
 
-    final consolidated = weatherData['consolidated_weather'] as List<dynamic>;
-    for (var i = 0; i < consolidated.length; i++) {
-      final weather = Weather.fromJson(consolidated[i]);
+    final daily = weatherData['daily'];
+
+    final current = weatherData['current'];
+    weathers.add(Weather.currentWeather(
+        current, daily[0]['temp']['max'], daily[0]['temp']['min'], city));
+
+    for (var i = 1; i < daily.length; i++) {
+      final weather = Weather.fromJson(daily[i], city);
       weathers.add(weather);
     }
 

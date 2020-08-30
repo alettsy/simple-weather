@@ -11,8 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Widget showWeather(int selected, String location, List<Weather> weathers) {
-    final weatherStyle = getWeatherStyle(weathers[selected].weatherStateAbbr);
+  Widget showWeather(int selected, List<Weather> weathers) {
+    final weatherStyle = getWeatherStyle(weathers[selected].weatherId);
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -33,13 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                location,
-                style: TextStyle(fontSize: 24),
+                weathers[0].city,
+                style: TextStyle(fontSize: 32),
               ),
             ),
             Text(
               'Updated ${weathers[selected].updated}',
-              style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 60),
             FittedBox(
@@ -76,8 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (state is GettingWeatherFailed) {
             return Text('Failed to get weather data.');
           } else if (state is WeatherDataSuccess) {
-            return showWeather(
-                state.selectedIndex, state.locationName, state.weathers);
+            return showWeather(state.selectedIndex, state.weathers);
           }
 
           return Container();

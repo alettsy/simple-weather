@@ -13,10 +13,9 @@ class GettingWeatherData extends WeatherState {}
 
 class WeatherDataSuccess extends WeatherState {
   final int selectedIndex;
-  final String locationName;
   final List<Weather> weathers;
 
-  WeatherDataSuccess(this.locationName, this.weathers, this.selectedIndex);
+  WeatherDataSuccess(this.weathers, this.selectedIndex);
 }
 
 class GettingWeatherFailed extends WeatherState {}

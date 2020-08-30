@@ -23,7 +23,7 @@ class WeatherDayList extends StatelessWidget {
         itemCount: weathers.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final imageUrl = getWeatherStyle(weathers[index].weatherStateAbbr)[0];
+          final imageUrl = getWeatherStyle(weathers[index].weatherId)[0];
           return GestureDetector(
             onTap: () {
               context.bloc<WeatherBloc>().add(SelectDay(index));
