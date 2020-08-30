@@ -9,16 +9,20 @@ part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
+  Timer timer;
+
   WeatherBloc() : super(WeatherInitial(0));
 
   @override
   Stream<WeatherState> mapEventToState(
     WeatherEvent event,
   ) async* {
-    if (event is GetWeatherDataEvent) {
+    if (event is GetWeatherData) {
       yield* _mapGetWeatherToState();
     } else if (event is SelectDay) {
       yield* _mapSelectDayToState(event);
+    } else if (event is UpdateWeather) {
+      yield* _mapUpdateWeatherToState(event);
     }
   }
 
@@ -28,6 +32,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       final city = await WeatherRepo().getCity();
       final data = await getWeather();
       yield WeatherDataSuccess(city, data, 0);
+      startTimer();
     } on Exception {
       yield GettingWeatherFailed();
     }
@@ -38,6 +43,19 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       final location = (state as WeatherDataSuccess).locationName;
       final weathers = (state as WeatherDataSuccess).weathers;
       yield WeatherDataSuccess(location, weathers, event.selected);
+    }
+  }
+
+  Stream<WeatherState> _mapUpdateWeatherToState(UpdateWeather event) async* {
+    if (state is WeatherDataSuccess) {
+      try {
+        final city = await WeatherRepo().getCity();
+        final data = await getWeather();
+        yield WeatherDataSuccess(
+            city, data, (state as WeatherDataSuccess).selectedIndex);
+      } on Exception {
+        yield GettingWeatherFailed();
+      }
     }
   }
 
@@ -53,5 +71,15 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
 
     return weathers;
+  }
+
+  void startTimer() async {
+    timer = Timer(Duration(minutes: 1), () {
+      add(
+        UpdateWeather(
+          (state as WeatherDataSuccess).selectedIndex,
+        ),
+      );
+    });
   }
 }
