@@ -43,6 +43,8 @@ class WeatherRepo {
         final data = json.decode(response.body);
         print('Received Weather JSON');
         return data;
+      } else {
+        return <String, dynamic>{};
       }
     } on Exception {
       print('Failed to get Weather JSON');
