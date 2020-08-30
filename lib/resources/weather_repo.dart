@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:geocoder/geocoder.dart';
 
 class WeatherRepo {
-  // get location
   Future<bool> checkLocationPermissions() async {
     //final status = await Geolocator().checkGeolocationPermissionStatus();
 
@@ -16,7 +15,7 @@ class WeatherRepo {
   Future<Position> getCoords() async {
     if (await checkLocationPermissions()) {
       final position = await Geolocator()
-          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
 
       return position;
     }
@@ -27,6 +26,7 @@ class WeatherRepo {
   // get weather data
   Future<Map<String, dynamic>> getWeatherJson() async {
     final position = await getCoords();
+
     final url =
         '${weatherUrl}lat=${position.latitude}&lon=${position.longitude}$weatherKey';
 
