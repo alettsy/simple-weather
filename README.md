@@ -1,5 +1,7 @@
 # simple_weather
 
+icons provided by https://icons8.com
+
 A new Flutter project.
 
 ## Getting Started
