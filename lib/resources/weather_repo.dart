@@ -6,32 +6,36 @@ import '../constants.dart';
 
 class WeatherRepo {
   Future<bool> checkLocationPermissions() async {
-    //final status = await Geolocator().checkGeolocationPermissionStatus();
+    final status = await Geolocator().checkGeolocationPermissionStatus();
 
-    // TODO: return true only if granted
-    return true;
+    if (status != GeolocationStatus.granted) {
+      throw Exception('Location permissions not enabled.');
+    } else {
+      return true;
+    }
   }
 
   Future<Position> getCoords() async {
-    if (await checkLocationPermissions()) {
+    await checkLocationPermissions();
+
+    try {
       final position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
 
       return position;
+    } on Exception {
+      print('Failed to get Coordinates');
+      rethrow;
     }
-
-    return Position();
   }
 
   // get weather data
   Future<Map<String, dynamic>> getWeatherJson() async {
-    final position = await getCoords();
-
-    final url =
-        '${weatherUrl}lat=${position.latitude}&lon=${position.longitude}$weatherKey';
-
     try {
-      final response = await http.get(url);
+      final position = await getCoords();
+      final url =
+          '${weatherUrl}lat=${position.latitude}&lon=${position.longitude}$weatherKey';
+      final response = await http.get(url).timeout(Duration(seconds: 10));
 
       print('url: $url');
 
@@ -39,9 +43,6 @@ class WeatherRepo {
         final data = json.decode(response.body);
         print('Received Weather JSON');
         return data;
-      } else {
-        print('Error getting Weather JSON');
-        return <String, dynamic>{};
       }
     } on Exception {
       print('Failed to get Weather JSON');
@@ -50,16 +51,20 @@ class WeatherRepo {
   }
 
   Future<String> getCity() async {
-    final position = await getCoords();
-    var coords = Coordinates(position.latitude, position.longitude);
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(coords);
-    for (var i = 0; i < addresses.length; i++) {
-      final locality = addresses[i].locality;
-      if (locality != null) {
-        return locality;
+    try {
+      final position = await getCoords();
+      var coords = Coordinates(position.latitude, position.longitude);
+      var addresses = await Geocoder.local.findAddressesFromCoordinates(coords);
+      for (var i = 0; i < addresses.length; i++) {
+        final locality = addresses[i].locality;
+        if (locality != null) {
+          return locality;
+        }
       }
+      return 'none';
+    } on Exception {
+      print('Failed to get City');
+      rethrow;
     }
-
-    return 'Unkown Location';
   }
 }
