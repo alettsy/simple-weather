@@ -53,10 +53,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   Stream<WeatherState> _mapUpdateWeatherToState() async* {
     if (state is WeatherDataSuccess) {
       try {
-        final sw = Stopwatch()..start();
         final data = await getWeather();
-        sw.stop();
-        print('time for getting weather update: ${sw.elapsed}');
         yield WeatherDataSuccess(
             data, (state as WeatherDataSuccess).selectedIndex);
         startTimer();
