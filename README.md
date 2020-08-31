@@ -8,5 +8,5 @@ Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect
 
 ## Screenshots
 
-![Sunny Day](/screenshots/sunny-day.png)
-![Smokey Day](/screenshots/smokey-day.png)
+<img alt="sunny day" src="/screenshots/sunny-day.png" width="50" />
+<img alt="smokey day" src="/screenshots/smokey-day.png" width="50" />
