@@ -8,11 +8,14 @@ import '../../resources/weather_repo.dart';
 part 'weather_event.dart';
 part 'weather_state.dart';
 
+/// A BLoC to handle weather events and states.
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  Timer timer;
+  Timer _timer;
 
+  /// Set the initial state to the selected day index of zero.
   WeatherBloc() : super(WeatherInitial(0));
 
+  /// Map weather [event] to states.
   @override
   Stream<WeatherState> mapEventToState(
     WeatherEvent event,
@@ -22,10 +25,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     } else if (event is SelectDay) {
       yield* _mapSelectDayToState(event);
     } else if (event is UpdateWeather) {
-      yield* _mapUpdateWeatherToState(event);
+      yield* _mapUpdateWeatherToState();
     }
   }
 
+  /// Display a circular progress indicator while getting weather data,
+  /// then show the weather page if successful, otherwise display the error.
   Stream<WeatherState> _mapGetWeatherToState() async* {
     try {
       yield GettingWeatherData();
@@ -37,6 +42,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 
+  /// Update which day is selected in the [event] and yield that day's weather.
   Stream<WeatherState> _mapSelectDayToState(SelectDay event) async* {
     if (state is WeatherDataSuccess) {
       final weathers = (state as WeatherDataSuccess).weathers;
@@ -44,7 +50,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 
-  Stream<WeatherState> _mapUpdateWeatherToState(UpdateWeather event) async* {
+  /// Update the weather without showing the progress indicator to 'quietly'
+  /// do it in the background while the user is using the app.
+  Stream<WeatherState> _mapUpdateWeatherToState() async* {
     if (state is WeatherDataSuccess) {
       try {
         final data = await getWeather();
@@ -57,6 +65,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 
+  /// Get the current weather and create the weather objects, and get the
+  /// city name.
   Future<List<Weather>> getWeather() async {
     final weathers = <Weather>[];
 
@@ -77,8 +87,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     return weathers;
   }
 
+  /// An update timer which updates weather data every 2 minutes.
   void startTimer() async {
-    timer = Timer(Duration(minutes: 2), () {
+    _timer = Timer(Duration(minutes: 2), () {
       add(
         UpdateWeather(
           (state as WeatherDataSuccess).selectedIndex,

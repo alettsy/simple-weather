@@ -5,6 +5,8 @@ import '../components/weather_day.dart';
 import '../models/weather_model.dart';
 import '../resources/resources.dart';
 
+/// Show all the [weathers] as a horizontal list that the user can select from
+/// as well as the selected weather based on [selectedIndex].
 class WeatherDayList extends StatelessWidget {
   final List<Weather> weathers;
   final int selectedIndex;

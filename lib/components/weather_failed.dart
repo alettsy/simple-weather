@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Show a weather failed message, explaining what the user should do.
 class WeatherFailed extends StatelessWidget {
   const WeatherFailed({
     Key key,

@@ -5,12 +5,15 @@ import '../components/components.dart';
 import '../models/weather_model.dart';
 import '../resources/weather_style.dart';
 
+/// The main screen to display the weather data.
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  /// Build the weather page with the [selected] weather as well as the
+  /// days which are made from [weathers].
   Widget showWeather(int selected, List<Weather> weathers) {
     final weatherStyle = getWeatherStyle(weathers[selected].weatherId);
 

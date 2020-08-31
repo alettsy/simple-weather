@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/weather_model.dart';
 
+/// Show the [icon], day name, and [weather] temperature as a column button
+/// that can be [selected].
 class WeatherDay extends StatelessWidget {
   final Image icon;
   final bool selected;

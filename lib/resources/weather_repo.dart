@@ -4,7 +4,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart';
 import '../constants.dart';
 
+/// A weather repository to get weather data from a REST API.
 class WeatherRepo {
+  /// Check that location permissions are enabled, and throw an error if
+  /// they are not.
   Future<bool> checkLocationPermissions() async {
     final status = await Geolocator().checkGeolocationPermissionStatus();
 
@@ -15,6 +18,7 @@ class WeatherRepo {
     }
   }
 
+  /// Get the current coordinates of the device with a low accuracy.
   Future<Position> getCoords() async {
     await checkLocationPermissions();
 
@@ -29,7 +33,7 @@ class WeatherRepo {
     }
   }
 
-  // get weather data
+  /// Get the weather JSON from the REST API using the device coordinates.
   Future<Map<String, dynamic>> getWeatherJson() async {
     try {
       final position = await getCoords();
@@ -52,6 +56,7 @@ class WeatherRepo {
     }
   }
 
+  /// Get the City using the Geocoder library and the device coordinates.
   Future<String> getCity() async {
     try {
       final position = await getCoords();

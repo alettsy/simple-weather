@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/weather_model.dart';
 
+/// Show the current temperature, and maximum and minimum temperatures
+/// below that contained within the [weather].
 class Temperature extends StatelessWidget {
   final Weather weather;
 

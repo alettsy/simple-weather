@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Determine which colors to use and which icon to display based on the
+/// [weatherId].
+///
+/// Weather conditon IDs can be found here: https://openweathermap.org/weather-conditions
 List<dynamic> getWeatherStyle(int weatherId) {
   String image;
   Color color1;

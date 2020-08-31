@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Show a medium sized circular progress indicator along with a loading message
+/// below.
 class LoadingWeather extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
