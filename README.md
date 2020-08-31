@@ -8,5 +8,7 @@ Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect
 
 ## Screenshots
 
-<img alt="sunny day" src="/screenshots/sunny-day.png" width="50" />
-<img alt="smokey day" src="/screenshots/smokey-day.png" width="50" />
+<div style="float: left;">
+<img alt="sunny day" src="/screenshots/sunny-day.png" width="300" />
+<img alt="smokey day" src="/screenshots/smokey-day.png" width="300" />
+</div>
