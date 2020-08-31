@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Image.asset(weatherStyle[0] as String, scale: 3),
                   const SizedBox(height: 30),
-                  Temperature(weather: weathers[selected]),
+                  WeatherInfo(weather: weathers[selected]),
                 ],
               ),
             ),

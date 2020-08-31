@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/weather_model.dart';
 
-/// Show the current temperature, and maximum and minimum temperatures
-/// below that contained within the [weather].
-class Temperature extends StatelessWidget {
+/// Show the weather information broken down contained within [weather].
+class WeatherInfo extends StatelessWidget {
   final Weather weather;
 
-  const Temperature({Key key, this.weather}) : super(key: key);
+  const WeatherInfo({Key key, this.weather}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +15,11 @@ class Temperature extends StatelessWidget {
         Text(
           '${weather.currentTemp.toStringAsFixed(0)}°C',
           style: TextStyle(fontSize: 64),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '${weather.weatherStateDescription.toLowerCase()}',
+          style: TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 10),
         Text(
