@@ -4,7 +4,7 @@ A simple weather app developed in Flutter which uses the [OpenWeatherMap](https:
 
 Based on [this](https://dribbble.com/shots/14021188-Weather-App-Concept) Dribbble.
 
-Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect)
+Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect).
 
 ## Screenshots
 
