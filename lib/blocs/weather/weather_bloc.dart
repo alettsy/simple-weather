@@ -90,7 +90,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   /// An update timer which updates weather data every 2 minutes.
   void startTimer() async {
-    Timer(Duration(seconds: 120), () {
+    Timer(Duration(seconds: 180), () {
       add(
         UpdateWeather(
           (state as WeatherDataSuccess).selectedIndex,
