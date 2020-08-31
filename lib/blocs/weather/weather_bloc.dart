@@ -10,8 +10,6 @@ part 'weather_state.dart';
 
 /// A BLoC to handle weather events and states.
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  Timer _timer;
-
   /// Set the initial state to the selected day index of zero.
   WeatherBloc() : super(WeatherInitial(0));
 
@@ -55,7 +53,10 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   Stream<WeatherState> _mapUpdateWeatherToState() async* {
     if (state is WeatherDataSuccess) {
       try {
+        final sw = Stopwatch()..start();
         final data = await getWeather();
+        sw.stop();
+        print('time for getting weather update: ${sw.elapsed}');
         yield WeatherDataSuccess(
             data, (state as WeatherDataSuccess).selectedIndex);
         startTimer();
@@ -89,7 +90,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   /// An update timer which updates weather data every 2 minutes.
   void startTimer() async {
-    _timer = Timer(Duration(minutes: 2), () {
+    Timer(Duration(seconds: 120), () {
       add(
         UpdateWeather(
           (state as WeatherDataSuccess).selectedIndex,
