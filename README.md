@@ -1,18 +1,7 @@
-# simple_weather
+# Simple Weather
 
-icons provided by https://icons8.com
+A simple weather app developed in Flutter which uses the [OpenWeatherMap](https://openweathermap.org/) REST API to get weather data for the devices current location.
 
-A new Flutter project.
+## Icons
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect)
