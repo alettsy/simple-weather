@@ -5,3 +5,8 @@ A simple weather app developed in Flutter which uses the [OpenWeatherMap](https:
 ## Icons
 
 Icons provided by [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect)
+
+## Screenshots
+
+![Sunny Day](/screenshots/sunny-day.png)
+![Smokey Day](/screenshots/smokey-day.png)
